@@ -8,6 +8,7 @@ function error404 () {
                 <h1>
                     404: PAGE NOT FOUND
                 </h1>
+                <img src="./images/supererror.jpg" alt="Super Error"></img>
                 <p>
                     Oops, sorry, we can't find this page!
                 </p>
