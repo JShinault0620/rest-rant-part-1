@@ -2,7 +2,7 @@ const router = require('express').Router()
 const places = require("../models/places.js")
 
 router.get('/', (req, res) => {
-    res.render('../views/places/index', { places })
+    res.render('./places/index', { places })
 })
 
 router.post('/', (req, res) => {
@@ -25,7 +25,14 @@ router.get('/new', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    res.send(`GET /places/${req.params.id}`)
+    let id = req.params.id
+    if (isNaN(id)) {
+        res.render('error404')
+    } else if (!places[id]) {
+        res.render('error404')
+    } else {
+        res.render(`./places/show`, {place: places[id]})
+    }
 })
 
 router.put('/:id', (req, res) => {
