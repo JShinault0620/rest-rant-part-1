@@ -36,11 +36,36 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    res.send(`PUT /places/${req.params.id}`)
+    let id = Number(req.params.id)
+    if (isNaN(id)) {
+        res.render('error404')
+    } else if (!places[id]) {
+        res.render('error404')
+    } else {
+        if (!req.body.pic) {
+            req.body.pic = 'http://placekitten.com/400/400'
+        }
+        if (!req.body.city) {
+            req.body.city = 'Anytown'
+        }
+        if (!req.body.state) {
+            req.body.state = 'USA'
+        }
+        places[id] = req.body
+        res.redirect(`/places/${id}`)
+    }
 })
+  
 
 router.get('/:id/edit', (req, res) => {
-    res.send(`PUT /places/${req.params.id}/edit`)
+    let id = Number(req.params.id)
+    if (isNaN(id)) {
+        res.render('error404')
+    } else if (!places[id]) {
+        res.render('error404')
+    } else {
+        res.render('places/edit', {id: id})
+    }
 })
 
 router.delete('/:id', (req, res) => {
