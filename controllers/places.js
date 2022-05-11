@@ -1,22 +1,26 @@
 const router = require('express').Router()
-const places = require("../models/places.js")
+const db = require('../models/')
 
 router.get('/', (req, res) => {
-    res.render('./places/index', { places })
+    db.Place.find()
+        .then((places) => {
+            res.render('places/index', { places })
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('error404')
+        })
 })
 
 router.post('/', (req, res) => {
-    if (!req.body.pic) {
-      req.body.pic = 'http://placekitten.com/400/400'
-    }
-    if (!req.body.city) {
-      req.body.city = 'Anytown'
-    }
-    if (!req.body.state) {
-      req.body.state = 'USA'
-    }
-    places.push(req.body)
-    res.redirect('/places')
+    db.Place.create(req.body)
+        .then(() => {
+            res.redirect('/places')
+        })
+        .catch(err => {
+            console.log('err', err)
+            res.render('error404')
+        })
   })
   
 
@@ -25,72 +29,39 @@ router.get('/new', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    let id = req.params.id
-    if (isNaN(id)) {
-        res.render('error404')
-    } else if (!places[id]) {
-        res.render('error404')
-    } else {
-        res.render(`./places/show`, {place: places[id], id: id})
-    }
+    db.Place.findById(req.params.id)
+        .then(place => {
+            res.render('places/show', { place })
+        })
+        .catch(err => {
+            console.log('err', err)
+            res.render('error404')
+        })
 })
 
 router.put('/:id', (req, res) => {
-    let id = Number(req.params.id)
-    if (isNaN(id)) {
-        res.render('error404')
-    } else if (!places[id]) {
-        res.render('error404')
-    } else {
-        if (!req.body.pic) {
-            req.body.pic = 'http://placekitten.com/400/400'
-        }
-        if (!req.body.city) {
-            req.body.city = 'Anytown'
-        }
-        if (!req.body.state) {
-            req.body.state = 'USA'
-        }
-        places[id] = req.body
-        res.redirect(`/places/${id}`)
-    }
+    res.send('PUT /places/:id stub')
 })
   
 
 router.get('/:id/edit', (req, res) => {
-    let id = Number(req.params.id)
-    if (isNaN(id)) {
-        res.render('error404')
-    } else if (!places[id]) {
-        res.render('error404')
-    } else {
-        res.render('places/edit', {id: id})
-    }
+    res.send('GET /places/:id/edit stub')
 })
 
 router.delete('/:id', (req, res) => {
-    let id = Number(req.params.id)
-    if (isNaN(id)) {
-        res.render('error404')
-    } else if (!places[id]) {
-        res.render('error404')
-    } else {
-        places.splice(req.params.id, 1)
-        res.status(303).redirect('/places')
-    }
+    res.send('DELETE /places/:id stub')
 })
 
 router.post('/:id/rant', (req, res) => {
-    res.send(`POST /places/${req.params.id}/rant`)
+    res.send(`POST /places/:id/rant`)
 })
 
 router.delete('/:id/rant/:rantId', (req, res) => {
-    places.splice(req.params.id, 1)
-    res.status(303).redirect('/')
+    res.send('DELETE /places/:id/rant stub')
 })
 
 router.get('*', (req, res) => {
-    res.status(404).send('<h1>The page you are looking for does not exist.</h1>')
+    res.send('Page does not exist.')
 })
 
 module.exports = router
