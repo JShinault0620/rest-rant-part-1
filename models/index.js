@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Mongoose = require('mongoose')
 
 Mongoose.connect(process.env.MONGO, () => {
